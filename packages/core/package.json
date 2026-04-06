@@ -1,0 +1,24 @@
+{
+  "name": "@ldk-assistant/core",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AI Agent 核心框架",
+  "type": "module",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./intent": "./src/intent/index.ts",
+    "./phone": "./src/phone/index.ts",
+    "./voice-input": "./src/voice-input/index.ts"
+  },
+  "scripts": {
+    "clean": "rm -rf dist node_modules"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.5",
+    "@types/ws": "^8.5.13"
+  }
+}

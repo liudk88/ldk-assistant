@@ -1,0 +1,28 @@
+{
+  "name": "ldk-assistant",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AI Agent Framework - 语音输入与对话系统",
+  "scripts": {
+    "dev": "node --import tsx apps/api/src/index.ts",
+    "build": "tsc -b",
+    "clean": "rm -rf node_modules packages/*/node_modules apps/*/node_modules"
+  },
+  "keywords": [
+    "ai",
+    "agent",
+    "voice-input",
+    "asr"
+  ],
+  "devDependencies": {
+    "@types/node": "^22.10.5",
+    "@types/ws": "^8.5.13",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  },
+  "engines": {
+    "node": ">=22.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "packageManager": "pnpm@9.15.0"
+}
