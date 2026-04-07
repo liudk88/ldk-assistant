@@ -4,12 +4,12 @@
   "private": true,
   "description": "AI Agent 核心框架",
   "type": "module",
-  "main": "./dist/index.js",
+  "main": "./src/index.ts",
   "exports": {
-    ".": "./dist/index.js",
-    "./intent": "./dist/intent/index.js",
-    "./phone": "./dist/phone/index.js",
-    "./voice-input": "./dist/voice-input/index.js"
+    ".": "./src/index.ts",
+    "./intent": "./src/intent/index.ts",
+    "./phone": "./src/phone/index.ts",
+    "./voice-input": "./src/voice-input/index.ts"
   },
   "scripts": {
     "clean": "rm -rf dist node_modules"
