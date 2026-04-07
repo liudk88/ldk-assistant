@@ -4,10 +4,11 @@
   "private": true,
   "description": "API 服务 - 语音输入与对话",
   "type": "module",
-  "main": "./src/index.ts",
+  "main": "./dist/index.js",
   "scripts": {
-    "start": "node --import tsx src/index.ts",
-    "dev": "node --import tsx --watch src/index.ts"
+    "start": "node dist/index.js",
+    "dev": "node --import tsx src/index.ts",
+    "build": "tsup"
   },
   "dependencies": {
     "@ldk-assistant/core": "workspace:*",
@@ -15,6 +16,7 @@
     "@fastify/websocket": "^11.0.1"
   },
   "devDependencies": {
-    "@types/node": "^22.10.5"
+    "@types/node": "^22.10.5",
+    "tsup": "^8.4.0"
   }
 }

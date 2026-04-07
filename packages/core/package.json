@@ -4,14 +4,15 @@
   "private": true,
   "description": "AI Agent 核心框架",
   "type": "module",
-  "main": "./src/index.ts",
+  "main": "./dist/index.js",
   "exports": {
-    ".": "./src/index.ts",
-    "./intent": "./src/intent/index.ts",
-    "./phone": "./src/phone/index.ts",
-    "./voice-input": "./src/voice-input/index.ts"
+    ".": "./dist/index.js",
+    "./intent": "./dist/intent/index.js",
+    "./phone": "./dist/phone/index.js",
+    "./voice-input": "./dist/voice-input/index.js"
   },
   "scripts": {
+    "build": "tsup",
     "clean": "rm -rf dist node_modules"
   },
   "dependencies": {
@@ -19,6 +20,7 @@
   },
   "devDependencies": {
     "@types/node": "^22.10.5",
-    "@types/ws": "^8.5.13"
+    "@types/ws": "^8.5.13",
+    "tsup": "^8.4.0"
   }
 }
