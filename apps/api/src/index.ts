@@ -87,15 +87,15 @@ async function main() {
 
   // 2. 初始化 PhoneServer
   const phoneServer = new PhoneServer({
-    onTextSubmit: async (text: string) => {
+    onTextSubmit: async (text: string, ws: WebSocket) => {
       console.log(`[PhoneServer] Text submitted: ${text}`);
 
       try {
-        // 处理文字输入
-        await voiceInputService.handleTextInput(text);
+        // 处理文字输入，传入 ws 以便回传结果
+        await voiceInputService.handleTextInput(text, ws);
       } catch (error) {
         console.error('[PhoneServer] Error handling text submit:', error);
-        throw error;
+        phoneServer.sendError(ws, String(error));
       }
     },
     onClose: () => {

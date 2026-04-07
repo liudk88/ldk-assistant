@@ -18,7 +18,7 @@ export type ServerToPhoneMessage =
  */
 export interface PhoneConnectionHandlers {
   /** 处理文字提交 */
-  onTextSubmit: (text: string) => void;
+  onTextSubmit: (text: string, ws: WebSocket) => void;
   /** 处理连接关闭 */
   onClose: () => void;
   /** 处理错误 */

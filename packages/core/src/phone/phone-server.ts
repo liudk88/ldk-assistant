@@ -93,7 +93,7 @@ export class PhoneServer {
     switch (message.type) {
       case 'text-submit':
         console.log(`Text submitted: ${message.text}`);
-        this.handlers.onTextSubmit(message.text);
+        this.handlers.onTextSubmit(message.text, ws);
         break;
       default:
         this.sendError(ws, `Unknown message type: ${(message as { type: string }).type}`);

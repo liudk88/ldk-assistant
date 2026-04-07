@@ -389,6 +389,7 @@
       }
       const payload = activePrefix ? `${activePrefix}${text}` : text;
       ws.send(JSON.stringify({ type: 'text-submit', text: payload }));
+      textInput.value = '';
       submitBtn.disabled = true;
     }
 

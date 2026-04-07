@@ -86,16 +86,31 @@ export class VoiceInputService {
         // 输入模式：文字注入电脑光标位置
         console.log(`[VoiceInputService] Injecting text: ${text}`);
         await this.textInjector.inject(text);
+        if (ws) this.sendResultToPhone(ws, result);
         break;
 
       case 'command':
         // 指令模式：交给编排层执行（v2 预留）
         console.log(`[VoiceInputService] Command mode: ${text}`);
         console.log('[VoiceInputService] Command execution not implemented yet');
+        if (ws) this.sendResultToPhone(ws, result);
         break;
 
       default:
         console.warn(`[VoiceInputService] Unknown intent: ${intent}`);
+    }
+  }
+
+  /**
+   * 将结果推回手机端
+   */
+  private sendResultToPhone(ws: WebSocket, result: VoiceInputResult): void {
+    if (ws.readyState === 1) { // WebSocket.OPEN
+      ws.send(JSON.stringify({
+        type: 'result',
+        intent: result.intent,
+        text: result.text,
+      }));
     }
   }
 }
