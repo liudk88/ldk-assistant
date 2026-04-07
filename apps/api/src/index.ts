@@ -25,13 +25,31 @@ const MOCK_MODE = process.env.MOCK_MODE === 'true';
  * 获取手机端网页 HTML
  */
 function getPhonePageHtml(): string {
-  const htmlPath = fileURLToPath(
-    new URL(
-      '../../packages/core/src/phone/static/index.html',
-      import.meta.url,
-    ),
+  // 支持环境变量覆盖，默认从 core 包的源码目录读取
+  const envPath = process.env.PHONE_HTML_PATH;
+  if (envPath) {
+    return readFileSync(envPath, 'utf-8');
+  }
+
+  // 尝试相对于 import.meta.url 解析
+  const metaPath = fileURLToPath(
+    new URL('../../packages/core/src/phone/static/index.html', import.meta.url),
   );
-  return readFileSync(htmlPath, 'utf-8');
+
+  // 兜底：相对于 process.cwd() 从项目根查找
+  const cwdPath = 'packages/core/src/phone/static/index.html';
+
+  for (const p of [metaPath, cwdPath]) {
+    try {
+      return readFileSync(p, 'utf-8');
+    } catch {
+      // 继续尝试下一个
+    }
+  }
+
+  throw new Error(
+    `Cannot find phone/index.html. Tried:\n  ${metaPath}\n  ${cwdPath}\n  Set PHONE_HTML_PATH env var to override.`,
+  );
 }
 
 /**
