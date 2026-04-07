@@ -36,10 +36,13 @@ function getPhonePageHtml(): string {
     new URL('../../packages/core/src/phone/static/index.html', import.meta.url),
   );
 
-  // 兜底：相对于 process.cwd() 从项目根查找
-  const cwdPath = 'packages/core/src/phone/static/index.html';
+  // 兜底1：相对于 process.cwd() 从项目根的源码目录查找
+  const cwdSrcPath = 'packages/core/src/phone/static/index.html';
 
-  for (const p of [metaPath, cwdPath]) {
+  // 兜底2：编译后环境，HTML 复制到了 core 的 dist 目录
+  const cwdDistPath = 'packages/core/dist/phone/static/index.html';
+
+  for (const p of [metaPath, cwdSrcPath, cwdDistPath]) {
     try {
       return readFileSync(p, 'utf-8');
     } catch {

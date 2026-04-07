@@ -5,7 +5,9 @@
   "description": "AI Agent Framework - 语音输入与对话系统",
   "scripts": {
     "dev": "node --import tsx apps/api/src/index.ts",
-    "build": "tsc -b",
+    "start": "node apps/api/dist/index.js",
+    "build": "tsc -b && npm run copy:static",
+    "copy:static": "mkdir -p packages/core/dist/phone/static && cp packages/core/src/phone/static/index.html packages/core/dist/phone/static/",
     "clean": "rm -rf node_modules packages/*/node_modules apps/*/node_modules"
   },
   "keywords": [
