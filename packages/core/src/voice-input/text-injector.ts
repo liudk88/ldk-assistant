@@ -20,7 +20,14 @@ export class TextInjector {
       ydotoolPath: config.ydotoolPath ?? 'ydotool',
       pasteDelayMs: config.pasteDelayMs ?? 50,
       mockMode: config.mockMode ?? false,
+      hostExecPrefix: config.hostExecPrefix ?? '',
     };
+  }
+
+  /** 将命令拼上 hostExecPrefix 前缀 */
+  private hostCmd(cmd: string): string {
+    const prefix = this.config.hostExecPrefix.trim();
+    return prefix ? `${prefix} ${cmd}` : cmd;
   }
 
   /**
@@ -42,16 +49,18 @@ export class TextInjector {
     };
 
     try {
+      const copyCmd = this.hostCmd(this.config.wlCopyPath);
+      console.log(`[TextInjector] copyCmd: ${copyCmd}`);
+
       // 1. wl-copy 写入剪贴板
-      await execAsync(`echo "${text}" | ${this.config.wlCopyPath}`, { env });
+      await execAsync(`echo "${text}" | ${copyCmd}`, { env });
 
       // 2. 等待剪贴板写入完成
       await this.delay(this.config.pasteDelayMs);
 
       // 3. ydotool 模拟 Ctrl+V
-      // key 29:1 是 Ctrl 按下，47:1 是 V 按下，47:0 是 V 松开，29:0 是 Ctrl 松开
       await execAsync(
-        `${this.config.ydotoolPath} key 29:1 47:1 47:0 29:0`,
+        this.hostCmd(`${this.config.ydotoolPath} key 29:1 47:1 47:0 29:0`),
         { env },
       );
     } catch (error) {

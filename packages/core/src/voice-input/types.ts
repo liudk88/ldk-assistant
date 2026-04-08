@@ -28,6 +28,8 @@ export interface TextInjectorConfig {
   pasteDelayMs?: number;
   /** 模拟模式（用于测试），默认 false */
   mockMode?: boolean;
+  /** 命令前缀，用于从容器内执行宿主机命令（如 'nsenter -t 1 -m -u -i -n --'） */
+  hostExecPrefix?: string;
 }
 
 /**

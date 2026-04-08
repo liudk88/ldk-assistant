@@ -20,29 +20,44 @@ const HTTP_PORT = Number.parseInt(process.env.HTTP_PORT ?? '3000', 10);
 const WS_PORT = Number.parseInt(process.env.WS_PORT ?? '3001', 10);
 const USER_UID = Number.parseInt(process.env.USER_UID ?? '1000', 10);
 const MOCK_MODE = process.env.MOCK_MODE === 'true';
+const HOST_EXEC_PREFIX = process.env.HOST_EXEC_PREFIX ?? '';
 
 /**
  * 获取手机端网页 HTML
  */
 function getPhonePageHtml(): string {
-  // 支持环境变量覆盖，默认从 core 包的源码目录读取
+  // 优先使用环境变量指定路径
   const envPath = process.env.PHONE_HTML_PATH;
+
+  // 备选路径列表（按优先级尝试）
+  const candidates: string[] = [];
+
   if (envPath) {
-    return readFileSync(envPath, 'utf-8');
+    candidates.push(envPath);
   }
 
-  // 尝试相对于 import.meta.url 解析
-  const metaPath = fileURLToPath(
-    new URL('../../packages/core/src/phone/static/index.html', import.meta.url),
+  // 相对于 process.cwd()（项目根目录）查找
+  candidates.push(
+    'packages/core/src/phone/static/index.html',
+    'packages/core/dist/phone/static/index.html',
   );
 
-  // 兜底1：相对于 process.cwd() 从项目根的源码目录查找
-  const cwdSrcPath = 'packages/core/src/phone/static/index.html';
+  // 相对于此文件的绝对路径解析
+  try {
+    const thisDir = fileURLToPath(new URL('.', import.meta.url));
+    candidates.push(
+      // tsx 直接运行时：此文件在 apps/api/src/
+      `${thisDir}../../../packages/core/src/phone/static/index.html`,
+      `${thisDir}../../../packages/core/dist/phone/static/index.html`,
+      // 编译后运行时：此文件在 apps/api/dist/
+      `${thisDir}../../packages/core/src/phone/static/index.html`,
+      `${thisDir}../../packages/core/dist/phone/static/index.html`,
+    );
+  } catch {
+    // import.meta.url 不可用时跳过
+  }
 
-  // 兜底2：编译后环境，HTML 复制到了 core 的 dist 目录
-  const cwdDistPath = 'packages/core/dist/phone/static/index.html';
-
-  for (const p of [metaPath, cwdSrcPath, cwdDistPath]) {
+  for (const p of candidates) {
     try {
       return readFileSync(p, 'utf-8');
     } catch {
@@ -51,7 +66,7 @@ function getPhonePageHtml(): string {
   }
 
   throw new Error(
-    `Cannot find phone/index.html. Tried:\n  ${metaPath}\n  ${cwdPath}\n  Set PHONE_HTML_PATH env var to override.`,
+    `Cannot find phone/index.html. Tried:\n  ${candidates.join('\n  ')}\n  Set PHONE_HTML_PATH env var to override.`,
   );
 }
 
@@ -79,6 +94,7 @@ async function main() {
       ydotoolPath: 'ydotool',
       pasteDelayMs: 50,
       mockMode: MOCK_MODE,
+      hostExecPrefix: HOST_EXEC_PREFIX,
     },
     onResult: (result) => {
       console.log(`[VoiceInputService] Result:`, result);
@@ -92,7 +108,8 @@ async function main() {
 
       try {
         // 处理文字输入，传入 ws 以便回传结果
-        await voiceInputService.handleTextInput(text, ws);
+        const result = await voiceInputService.handleTextInput(text, ws);
+        phoneServer.sendResult(ws, result.intent, result.text);
       } catch (error) {
         console.error('[PhoneServer] Error handling text submit:', error);
         phoneServer.sendError(ws, String(error));

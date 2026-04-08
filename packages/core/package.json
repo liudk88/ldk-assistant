@@ -6,10 +6,10 @@
   "type": "module",
   "main": "./dist/index.js",
   "exports": {
-    ".": "./dist/index.js",
-    "./intent": "./dist/intent/index.js",
-    "./phone": "./dist/phone/index.js",
-    "./voice-input": "./dist/voice-input/index.js"
+    ".": "./src/index.ts",
+    "./intent": "./src/intent/index.ts",
+    "./phone": "./src/phone/index.ts",
+    "./voice-input": "./src/voice-input/index.ts"
   },
   "scripts": {
     "build": "tsup",
